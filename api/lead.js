@@ -1,6 +1,7 @@
 // POST /api/lead — Vercel serverless function (Node 18+).
 // Validates, scores, and forwards each lead to your webhook(s) as JSON.
 import { randomUUID } from 'node:crypto'
+import { site } from '../site.config.js'
 
 const INCOME_MID = { 'Under $2,500': 2000, '$2,500–$3,500': 3000, '$3,500–$5,000': 4250, '$5,000+': 6000, 'Not sure': 0 }
 const CREDIT_PTS = { 'Excellent (720+)': 30, 'Good (660–719)': 24, 'Fair (600–659)': 14, Rebuilding: 6, 'Not sure': 10 }
@@ -53,6 +54,21 @@ async function forward(url, lead, secret) {
   if (!res.ok) throw new Error(`webhook ${res.status}`)
 }
 
+// Opt-in confirmation text via Twilio. TWILIO_FROM is your number (+1...) or a Messaging Service SID (MG...).
+async function sendWelcomeText(lead) {
+  const { TWILIO_ACCOUNT_SID: sid, TWILIO_AUTH_TOKEN: token, TWILIO_FROM: from } = process.env
+  if (!sid || !token || !from) return
+  const body = `Hi ${lead.firstName}, it's ${site.brandName}. Thanks for sharing your $${lead.budget}/mo budget. I'm finding vehicles that fit now. ` +
+    'Msg frequency varies. Msg & data rates may apply. Reply STOP to opt out, HELP for help.'
+  const params = new URLSearchParams({ To: lead.phone, Body: body, [from.startsWith('MG') ? 'MessagingServiceSid' : 'From']: from })
+  const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
+    method: 'POST',
+    headers: { Authorization: 'Basic ' + Buffer.from(`${sid}:${token}`).toString('base64') },
+    body: params,
+  })
+  if (!res.ok) throw new Error(`twilio ${res.status} ${(await res.text()).slice(0, 200)}`)
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ error: 'POST only' }) }
   let body = req.body
@@ -86,10 +102,12 @@ export default async function handler(req, res) {
   const urls = [process.env.LEAD_WEBHOOK_URL, process.env.LEAD_WEBHOOK_URL_2].filter(Boolean)
   if (!urls.length) {
     console.log('LEAD (no webhook set):', JSON.stringify(lead))
-    return res.status(200).json({ id })
+  } else {
+    const results = await Promise.allSettled(urls.map((u) => forward(u, lead, process.env.LEAD_WEBHOOK_SECRET)))
+    results.forEach((r, i) => r.status === 'rejected' && console.error(`webhook ${i + 1} failed:`, r.reason?.message, JSON.stringify(lead)))
+    if (results.every((r) => r.status === 'rejected')) return res.status(502).json({ error: 'Could not save your info.' })
   }
-  const results = await Promise.allSettled(urls.map((u) => forward(u, lead, process.env.LEAD_WEBHOOK_SECRET)))
-  results.forEach((r, i) => r.status === 'rejected' && console.error(`webhook ${i + 1} failed:`, r.reason?.message, JSON.stringify(lead)))
-  if (results.every((r) => r.status === 'rejected')) return res.status(502).json({ error: 'Could not save your info.' })
+  // A failed text shouldn't fail the lead; it's logged so you can follow up by hand
+  try { await sendWelcomeText(lead) } catch (err) { console.error('welcome text failed:', err.message, lead.phone) }
   return res.status(200).json({ id })
 }
