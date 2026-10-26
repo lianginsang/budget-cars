@@ -1,0 +1,24 @@
+# Render Blueprint: New → Blueprint, pick this repo. Or create a Web Service by hand with the same settings.
+services:
+  - type: web
+    name: budget-cars
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: VITE_GADS_ID
+        sync: false
+      - key: VITE_GADS_LEAD_LABEL
+        sync: false
+      - key: VITE_GADS_CALL_LABEL
+        sync: false
+      - key: VITE_GA4_ID
+        sync: false
+      - key: LEAD_WEBHOOK_URL
+        sync: false
+      - key: LEAD_WEBHOOK_URL_2
+        sync: false
+      - key: LEAD_WEBHOOK_SECRET
+        sync: false
