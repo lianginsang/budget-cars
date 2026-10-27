@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { site } from '../site.config.js'
 import { getAttribution, track } from './tracking.js'
+import { consentRecord } from './consent.js'
 
 const DOWN = ['$0 down', 'Under $1,000', '$1,000–$3,000', '$3,000+']
 const CREDIT = ['Excellent (720+)', 'Good (660–719)', 'Fair (600–659)', 'Rebuilding', 'Not sure']
@@ -9,6 +10,7 @@ const TIMING = ['Today', 'Within a week', 'This month', 'Just looking']
 const TYPES = ['Car', 'SUV', 'Truck', 'Minivan', 'Any']
 
 const fmt = (n) => '$' + n.toLocaleString('en-US')
+const from = site.brandName + (site.dealerName ? ` at ${site.dealerName}` : '')
 
 function Choice({ name, options, value, onChange, columns }) {
   return (
@@ -41,7 +43,7 @@ export default function LeadForm() {
   const [budget, setBudget] = useState(site.budgetDefault)
   const [a, setA] = useState({
     down: '$0 down', trade: 'Not sure', credit: 'Not sure', income: 'Not sure', timing: 'Today', type: 'Any', condition: 'Either',
-    firstName: '', phone: '', email: '', consent: false, company: '',
+    firstName: '', phone: '', email: '', consentUpdates: false, consentOffers: false, company: '',
   })
   const [error, setError] = useState('')
   const [sending, setSending] = useState(false)
@@ -79,12 +81,12 @@ export default function LeadForm() {
     if (!a.firstName.trim()) return setError('Add your first name so I know who I’m texting.')
     if (digits.length !== 10) return setError('Enter a 10-digit mobile number.')
     if (a.email && !/^\S+@\S+\.\S+$/.test(a.email)) return setError('That email doesn’t look complete. Fix it or leave it blank.')
-    if (!a.consent) return setError('Check the box to let me text and call you about your matches.')
+    if (!a.consentUpdates) return setError('Check the first box so I can text you about your vehicle search.')
 
     setSending(true)
     const payload = {
       budget, ...a, phone: '+1' + digits,
-      consentText: document.getElementById('consent-text')?.textContent || '',
+      consentText: consentRecord(),
       elapsedMs: Date.now() - startedAt.current,
       attribution: getAttribution(),
       page: location.href,
@@ -186,17 +188,28 @@ export default function LeadForm() {
             <label htmlFor="co">Company</label>
             <input id="co" tabIndex={-1} autoComplete="off" value={a.company} onChange={(e) => set('company')(e.target.value)} />
           </div>
+          {/* Separate boxes for transactional and marketing texts, per carrier (A2P 10DLC) rules.
+              Keep this wording in sync with sms-opt-in/index.html. */}
           <label className="consent">
-            <input type="checkbox" checked={a.consent} onChange={(e) => set('consent')(e.target.checked)} />
-            <span id="consent-text">
-              I agree to receive calls and text messages from {site.brandName}{site.dealerName ? ` at ${site.dealerName}` : ''} at this number about my vehicle search,
-              including messages sent with automated technology and AI-assisted tools. Consent isn’t required to buy.
-              Message frequency varies. Message and data rates may apply. Reply STOP to opt out or HELP for help.
-              See the <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a> and <a href="/terms/" target="_blank" rel="noopener">Terms &amp; Conditions</a>.
+            <input type="checkbox" checked={a.consentUpdates} onChange={(e) => set('consentUpdates')(e.target.checked)} />
+            <span id="consent-updates">
+              <strong>Updates:</strong> I agree to receive text messages from {from} about my vehicle search, including replies to my
+              questions and test-drive scheduling and reminders.
             </span>
           </label>
+          <label className="consent">
+            <input type="checkbox" checked={a.consentOffers} onChange={(e) => set('consentOffers')(e.target.checked)} />
+            <span id="consent-offers">
+              <strong>Offers:</strong> I agree to receive marketing text messages from {from} with vehicles and deals that may fit my budget.
+            </span>
+          </label>
+          <p className="consent-note" id="consent-note">
+            Consent is not a condition of purchase. Messages may be sent using automated technology. Msg frequency varies.
+            Msg &amp; data rates may apply. Reply HELP for help, STOP to opt out.{' '}
+            <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a> · <a href="/terms/" target="_blank" rel="noopener">Terms &amp; Conditions</a>
+          </p>
           <button type="submit" className="btn btn--go" disabled={sending}>
-            {sending ? 'Sending…' : 'Send me my matches'}
+            {sending ? 'Sending…' : 'Yes, text me my matches'}
           </button>
         </fieldset>
       )}

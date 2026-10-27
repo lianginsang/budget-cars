@@ -1,6 +1,7 @@
 // Submits the plain-HTML form on /sms-opt-in/ through the same /api/lead as the main form.
 import { site } from '../site.config.js'
 import { initTracking, getAttribution } from './tracking.js'
+import { consentRecord } from './consent.js'
 import './styles.css'
 
 initTracking()
@@ -19,15 +20,16 @@ form.addEventListener('submit', async (e) => {
   if (!f.firstName.value.trim()) return showError('Add your first name so I know who I’m texting.')
   if (digits.length !== 10) return showError('Enter a 10-digit mobile number.')
   if (f.email.value && !/^\S+@\S+\.\S+$/.test(f.email.value)) return showError('That email doesn’t look complete. Fix it or leave it blank.')
-  if (!f.consent.checked) return showError('Check the box to let me text and call you about your matches.')
+  if (!f.consentUpdates.checked) return showError('Check the first box so I can text you about your vehicle search.')
 
   btn.disabled = true
   btn.textContent = 'Sending…'
   const payload = {
     source: 'sms-optin',
     firstName: f.firstName.value, phone: '+1' + digits, email: f.email.value, company: f.company.value,
-    consent: true,
-    consentText: document.getElementById('consent-text').textContent.replace(/\s+/g, ' ').trim(),
+    consentUpdates: true,
+    consentOffers: f.consentOffers.checked,
+    consentText: consentRecord(),
     elapsedMs: Date.now() - startedAt,
     attribution: getAttribution(),
     page: location.href,
@@ -42,7 +44,7 @@ form.addEventListener('submit', async (e) => {
     location.href = `/thanks/?id=${encodeURIComponent(data.id)}`
   } catch {
     btn.disabled = false
-    btn.textContent = 'Send me my matches'
+    btn.textContent = 'Yes, text me my matches'
     showError(`Your info didn’t send. Try again, or text ${site.phoneDisplay}.`)
   }
 })

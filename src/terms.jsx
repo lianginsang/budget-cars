@@ -29,13 +29,18 @@ function Terms() {
           <h2 id="sms">SMS Terms</h2>
           <ul>
             <li>
-              <strong>Program:</strong> {site.brandName} vehicle matches. When you submit the form on this site and check the consent box,
-              you agree to receive text messages from {site.brandName} at the mobile number you provide.
+              <strong>Program:</strong> {site.brandName} vehicle matches. The form on this site has two separate, unchecked boxes. You
+              choose which texts you get from {site.brandName} at the mobile number you provide.
             </li>
             <li>
-              <strong>What you’ll receive:</strong> vehicles that may fit your budget, replies to your questions, test drive scheduling and
-              reminders, and follow-ups about your vehicle search. Some messages may be sent with automated or AI-assisted tools.
+              <strong>Updates</strong> (first box): messages about your vehicle search, including replies to your questions and test-drive
+              scheduling and reminders.
             </li>
+            <li>
+              <strong>Offers</strong> (second box, optional): marketing messages with vehicles and deals that may fit your budget. You can
+              get Updates without agreeing to Offers.
+            </li>
+            <li>Some messages may be sent using automated technology or AI-assisted tools.</li>
             <li><strong>Message frequency varies</strong> based on your search and how you reply.</li>
             <li><strong>Message and data rates may apply.</strong> Check your mobile plan for details.</li>
             <li><strong>To opt out,</strong> reply STOP to any message. You’ll get one confirmation text and no further messages unless you opt in again.</li>

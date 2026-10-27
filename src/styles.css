@@ -107,6 +107,9 @@ p { margin: 0 0 1em; }
 .hp { position: absolute; left: -9999px; height: 0; overflow: hidden; }
 .consent { display: flex; gap: 10px; align-items: flex-start; font-size: .78rem; line-height: 1.45; color: var(--muted); margin: 6px 0 16px; }
 .consent input { width: 20px; height: 20px; flex: none; margin-top: 1px; accent-color: var(--ink); }
+.consent + .consent { margin-top: -6px; }
+.consent strong { color: var(--text); }
+.consent-note { font-size: .74rem; line-height: 1.45; color: var(--muted); margin: -4px 0 16px; }
 
 .btn { display: inline-flex; justify-content: center; align-items: center; font: inherit; font-weight: 700; font-size: 1.05rem; padding: 14px 22px; border-radius: 12px; border: 2px solid transparent; cursor: pointer; text-decoration: none; min-height: 52px; }
 .btn--go { width: 100%; background: var(--marker); color: var(--ink); border-color: var(--marker); }

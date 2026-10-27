@@ -42,8 +42,11 @@ export function normalize(b) {
     firstName: clean(b.firstName, 40),
     phone: clean(b.phone, 16),
     email: clean(b.email, 120),
-    consent: b.consent === true,
-    consentText: clean(b.consentText, 600),
+    // Updates (transactional) is required to text at all; Offers (marketing) is optional and separate
+    consent: b.consentUpdates === true,
+    consentUpdates: b.consentUpdates === true,
+    consentOffers: b.consentOffers === true,
+    consentText: clean(b.consentText, 1200),
   }
 }
 
@@ -102,8 +105,8 @@ export default async function handler(req, res) {
   }
   // One-line summary your phone notification / AI responder can use directly
   lead.summary = l.source === 'sms-optin'
-    ? `SMS OPT-IN ${lead.firstName} ${lead.phone}${lead.email ? ' ' + lead.email : ''} (no budget yet)`
-    : `${lead.tier} (${lead.score}) ${lead.firstName} ${lead.phone} — $${lead.budget}/mo, ${lead.down}, credit ${lead.credit}, income ${lead.income}, ${lead.timing}, ${lead.condition} ${lead.type}, trade: ${lead.trade}${lead.flags.length ? ' | ' + lead.flags.join('; ') : ''}`
+    ? `SMS OPT-IN ${lead.firstName} ${lead.phone}${lead.email ? ' ' + lead.email : ''} (no budget yet)${lead.consentOffers ? '' : ' | NO marketing texts'}`
+    : `${lead.tier} (${lead.score}) ${lead.firstName} ${lead.phone} — $${lead.budget}/mo, ${lead.down}, credit ${lead.credit}, income ${lead.income}, ${lead.timing}, ${lead.condition} ${lead.type}, trade: ${lead.trade}${lead.flags.length ? ' | ' + lead.flags.join('; ') : ''}${lead.consentOffers ? '' : ' | NO marketing texts'}`
 
   const urls = [process.env.LEAD_WEBHOOK_URL, process.env.LEAD_WEBHOOK_URL_2].filter(Boolean)
   if (!urls.length) {

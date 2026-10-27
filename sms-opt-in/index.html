@@ -49,15 +49,24 @@
               <input id="co" name="company" tabindex="-1" autocomplete="off" />
             </div>
             <label class="consent">
-              <input type="checkbox" id="consent" name="consent" />
-              <span id="consent-text">
-                I agree to receive calls and text messages from Lian Sang at this number about my vehicle search,
-                including messages sent with automated technology and AI-assisted tools. Consent isn’t required to buy.
-                Message frequency varies. Message and data rates may apply. Reply STOP to opt out or HELP for help.
-                See the <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a> and <a href="/terms/" target="_blank" rel="noopener">Terms &amp; Conditions</a>.
+              <input type="checkbox" name="consentUpdates" />
+              <span id="consent-updates">
+                <strong>Updates:</strong> I agree to receive text messages from Lian Sang about my vehicle search, including replies to my
+                questions and test-drive scheduling and reminders.
               </span>
             </label>
-            <button type="submit" class="btn btn--go">Send me my matches</button>
+            <label class="consent">
+              <input type="checkbox" name="consentOffers" />
+              <span id="consent-offers">
+                <strong>Offers:</strong> I agree to receive marketing text messages from Lian Sang with vehicles and deals that may fit my budget.
+              </span>
+            </label>
+            <p class="consent-note" id="consent-note">
+              Consent is not a condition of purchase. Messages may be sent using automated technology. Msg frequency varies.
+              Msg &amp; data rates may apply. Reply HELP for help, STOP to opt out.
+              <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a> · <a href="/terms/" target="_blank" rel="noopener">Terms &amp; Conditions</a>
+            </p>
+            <button type="submit" class="btn btn--go">Yes, text me my matches</button>
             <p class="error" role="alert" id="err" hidden></p>
           </fieldset>
         </form>

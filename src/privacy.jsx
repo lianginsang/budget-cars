@@ -29,7 +29,7 @@ function Privacy() {
           <p>
             When you use the form I collect what you enter: your first name, mobile number, optional email, monthly budget,
             down payment range, trade-in status, self-rated credit range, income range, timing, and vehicle preferences.
-            If you check the consent box, I also record that you agreed to receive calls and text messages, the exact consent wording
+            If you check a consent box, I also record which text messages you agreed to receive (Updates, Offers, or both), the exact consent wording
             you saw, the date and time, and your IP address.
             I also collect basic technical data: the page you came from, ad click identifiers (such as a Google click ID),
             campaign tags, browser type, and the time of your request. I do not ask for your Social Security number or run credit from this site.
