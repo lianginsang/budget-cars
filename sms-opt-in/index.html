@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Get vehicle matches by text – Lian Sang</title>
+    <meta name="description" content="Sign up to get vehicle matches by text from Lian Sang in Jacksonville, FL." />
+    <meta name="theme-color" content="#123049" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Permanent+Marker&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Plain HTML on purpose: carrier/Twilio reviewers must see the consent step without running JavaScript.
+         Keep the brand, number and wording in sync with site.config.js and src/LeadForm.jsx. -->
+    <header class="top">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true">$</span>
+        <span>Lian<em>Car shopping in Jacksonville</em></span>
+      </a>
+      <div class="top-actions">
+        <a class="pill" href="sms:+19048672415">Text</a>
+        <a class="pill pill--solid" href="tel:+19048672415">Call (904) 867-2415</a>
+      </div>
+    </header>
+    <main class="hero">
+      <div class="wrap narrow">
+        <form class="finder" id="optin" action="/api/lead" method="post" novalidate>
+          <fieldset class="step">
+            <legend>Get vehicle matches by text</legend>
+            <p class="fine" style="text-align:left;margin:0 0 14px">
+              Lian Sang texts you vehicles in Jacksonville, FL that may fit your monthly budget, answers your questions, and helps schedule test drives.
+            </p>
+            <div class="field">
+              <label for="fn">First name</label>
+              <input id="fn" name="firstName" autocomplete="given-name" required />
+            </div>
+            <div class="field">
+              <label for="ph">Mobile number</label>
+              <input id="ph" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(904) 555-0123" required />
+            </div>
+            <div class="field">
+              <label for="em">Email <span class="opt">Optional</span></label>
+              <input id="em" name="email" type="email" autocomplete="email" />
+            </div>
+            <div class="hp" aria-hidden="true">
+              <label for="co">Company</label>
+              <input id="co" name="company" tabindex="-1" autocomplete="off" />
+            </div>
+            <label class="consent">
+              <input type="checkbox" id="consent" name="consent" />
+              <span id="consent-text">
+                I agree to receive calls and text messages from Lian Sang at this number about my vehicle search,
+                including messages sent with automated technology and AI-assisted tools. Consent isn’t required to buy.
+                Message frequency varies. Message and data rates may apply. Reply STOP to opt out or HELP for help.
+                See the <a href="/privacy/" target="_blank" rel="noopener">Privacy Policy</a> and <a href="/terms/" target="_blank" rel="noopener">Terms &amp; Conditions</a>.
+              </span>
+            </label>
+            <button type="submit" class="btn btn--go">Send me my matches</button>
+            <p class="error" role="alert" id="err" hidden></p>
+          </fieldset>
+        </form>
+      </div>
+    </main>
+    <footer class="foot">
+      <div class="wrap">
+        <p class="foot-links">
+          <span>© Lian Sang</span>
+          <a href="tel:+19048672415">(904) 867-2415</a>
+          <a href="/privacy/">Privacy Policy</a>
+          <a href="/terms/">Terms &amp; Conditions</a>
+        </p>
+      </div>
+    </footer>
+    <script type="module" src="/src/optin.js"></script>
+  </body>
+</html>

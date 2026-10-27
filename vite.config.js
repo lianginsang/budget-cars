@@ -36,6 +36,7 @@ export default defineConfig(({ mode }) => {
           thanks: resolve(__dirname, 'thanks/index.html'),
           privacy: resolve(__dirname, 'privacy/index.html'),
           terms: resolve(__dirname, 'terms/index.html'),
+          optin: resolve(__dirname, 'sms-opt-in/index.html'),
         },
       },
     },
